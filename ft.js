@@ -118,11 +118,13 @@ async function buy(privateKey, clubId, amt) {
         while (!isMinted) {
             try {
                 if (friend_balance > 0) {
+                    const gas_settings = config.gas_settings.gas_auto == 'no' ? { gasPrice: ethers.parseUnits(config.gas_settings.gas_price, "gwei")} : {}
                     const swap = await FRIEND_TECH_CONTRACT.buyToken(
                         parseInt(club_id),
                         BigInt(config.settings.max_token_in),
                         parseInt(amt),
-                        config.settings.referral_address
+                        config.settings.referral_address,
+                        gas_settings
                     )
                     logWithTime(`${wallet.address} | Bought x${amt} #${club_id}`, "s")
                     isMinted = true
@@ -153,11 +155,13 @@ async function sell(privateKey, clubId, amt) {
         let isMinted = false;
         while (!isMinted) {
             try {
+                const gas_settings = config.gas_settings.gas_auto == 'no' ? { gasPrice: ethers.parseUnits(config.gas_settings.gas_price, "gwei")} : {}
                 const swap = await FRIEND_TECH_CONTRACT.sellToken(
                     parseInt(club_id),
                     parseInt(config.settings.min_token_out),
                     parseInt(amt),
-                    config.settings.referral_address
+                    config.settings.referral_address,
+                    gas_settings
                 )
                 logWithTime(`${wallet.address} | Sold x${amt} #${club_id}`, "s")
                 isMinted = true
